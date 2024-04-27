@@ -17,12 +17,11 @@ namespace ECard.Common
         private readonly string _connectionString;
 
         /// <summary>
-        /// コンストラクタ：App.configから接続文字列を取得して設定
+        /// コンストラクタ
         /// </summary>
         public DatabaseHelper()
         {
-            // "DefaultConnection" は App.config または Web.config に定義されている接続文字列の名前です。
-            _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            _connectionString = ConfigurationManager.ConnectionStrings["sqlsvrconnect"].ConnectionString;
         }
 
         /// <summary>
