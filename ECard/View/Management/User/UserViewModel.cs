@@ -8,7 +8,7 @@ namespace ECard.View.Management.User
 {
     internal class UserViewModel
     {
-        public int UserID { get; set; }
+        public int UserId { get; set; }
         public string UserName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdateAt { get; set; }

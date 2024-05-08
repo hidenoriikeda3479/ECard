@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -31,9 +32,7 @@ namespace ECard
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnLan_Click(object sender, EventArgs e)
-        {
-
-            
+        {  
             // 何も入力されていな場合、エラーメッセージを表示する
             if (string.IsNullOrEmpty(txtUser.Text + txtPswrd.Text + txtPswrdcon.Text))
             {
@@ -48,7 +47,6 @@ namespace ECard
                 return;
             }
             
-
             // DBの接続情報
             var dbHelper = new DatabaseHelper();
 
@@ -70,18 +68,34 @@ namespace ECard
             }
             else
             {
-                MessageBox.Show("登録完了しました");
-            }
+                // 登録確認
+                var result = MessageBox.Show(txtUser.Text + "でよろしいですか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            // ハッシュ化ヘルパー
-            string hsps = HashHelper.sha512(txtPswrd.Text);
+                // はいを選択した場合
+                if (result == DialogResult.Yes)
+                {
+                    // ハッシュ化ヘルパー
+                    string hsps = HashHelper.sha512(txtPswrd.Text);
 
-            // SQL
-            string query = String.Format("INSERT INTO users (username, password_hash, created_at) " +
-                "VALUES ('{0}','{1}','{2}')", txtUser.Text, hsps, DateTime.Now);
+                    // SQL
+                    string query = String.Format("INSERT INTO users (username, password_hash, created_at) " +
+                        "VALUES ('{0}','{1}','{2}')", txtUser.Text, hsps, DateTime.Now);
 
-            // SQL時以降
-            dbHelper.ExecuteQuery(con, query);
+                    // SQL時以降
+                    dbHelper.ExecuteQuery(con, query);
+
+                    // 登録完了メッセージを表示
+                    MessageBox.Show("登録完了しました");
+
+                    // フォームを閉じる
+                    this.Close();
+                }
+                else
+                {
+                    // いいえを選択した場合
+                    return;
+                }
+            }      
         }
     }
 }

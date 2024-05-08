@@ -49,16 +49,16 @@
   <ItemGroup>
     <Compile Include="Common\DatabaseHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
-    <Compile Include="RegistrationForm.cs">
+    <Compile Include="View\Management\User\RegistrationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RegistrationForm.Designer.cs">
+    <Compile Include="View\Management\User\RegistrationForm.Designer.cs">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Update.cs">
+    <Compile Include="View\Management\User\Update.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Update.Designer.cs">
+    <Compile Include="View\Management\User\Update.Designer.cs">
       <DependentUpon>Update.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Main\MainForm.cs">
@@ -88,10 +88,10 @@
       <DependentUpon>UserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Management\User\UserViewModel.cs" />
-    <EmbeddedResource Include="RegistrationForm.resx">
+    <EmbeddedResource Include="View\Management\User\RegistrationForm.resx">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Update.resx">
+    <EmbeddedResource Include="View\Management\User\Update.resx">
       <DependentUpon>Update.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Main\MainForm.resx">

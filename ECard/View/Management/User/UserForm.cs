@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +24,6 @@ namespace ECard.User
         public UserForm()
         {
             InitializeComponent();
-
-            
         }
 
         /// <summary>
@@ -45,15 +45,25 @@ namespace ECard.User
             string sql = $"SELECT * FROM users Where 1 = 1";
             dbHelper.ExecuteQuery(con, sql);
 
-            // ボタン列を作成
+            // 更新ボタン列を作成
             DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
             buttonColumn.HeaderText = "更新"; // 列のヘッダーテキスト
             buttonColumn.Name = "ActionColumn"; // 列の名前
             buttonColumn.Text = "編集"; // ボタンに表示されるテキスト
-            buttonColumn.UseColumnTextForButtonValue = true;
+            buttonColumn.UseColumnTextForButtonValue = true; //全てのボタンに"編集"と表示されます
+
+            // 削除ボタン列を作成
+            DataGridViewButtonColumn deleteBtn = new DataGridViewButtonColumn();
+            deleteBtn.HeaderText = "データから削除"; // 列のヘッダーテキスト
+            deleteBtn.Name = "deleteBtn"; // 列の名前
+            deleteBtn.Text = "削除"; // ボタンに表示されるテキスト
+            deleteBtn.UseColumnTextForButtonValue = true; // 全てのボタンに"削除"と表示されます
 
             // dataGridView1の最初の列としてボタン列を追加
             dataGridView1.Columns.Insert(0, buttonColumn);
+
+            // dataGridView1の最初の列としてボタン列を追加
+            dataGridView1.Columns.Insert(1, deleteBtn);
 
             // ユーザー名が入力されている
             if (txtUser.Text != "")
@@ -75,21 +85,18 @@ namespace ECard.User
             {
                 UserViewModel model = new UserViewModel();
 
-
-                model.UserID = int.Parse(row["user_id"].ToString());
+                model.UserId = int.Parse(row["user_id"].ToString());
                 model.UserName = row["username"]?.ToString();
                 model.CreatedAt = DateTime.Parse(row["created_at"].ToString());
 
+                // nullの有無を確認
                 if (model.UpdateAt != null)
                 {
                     model.UpdateAt = DateTime.Parse(row["update_at"].ToString());
                 }
-                    
-
-
                 list.Add(model);
             }
-            // TODO ; グリッドに値を当てはめる
+            dataGridView1.DataSource = list;
         }
 
         /// <summary>
@@ -115,23 +122,63 @@ namespace ECard.User
         /// <param name="e"></param>
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            /* DataGridView dgv = (DataGridView)sender;
-             //"Button"列ならば、ボタンがクリックされた
-             if (dgv.Columns[e.ColumnIndex].Name == "Button")
-             {
-                 // 押された行のボタンのユーザー名を取得する。
-                 var user = dataGridView1.Rows[e.RowIndex].Cells["users"].Value;
-
-                 Update UpdateForm = new Update(user.ToString());
-                 UpdateForm.Show();*/
+            // 更新編集ボタン
             if (dataGridView1.Columns[e.ColumnIndex].Name == "ActionColumn")
             {
-                // 押された行のユーザー名を取得する。
-                var username = dataGridView1.Rows[e.RowIndex].Cells["username"].Value;
+                // 押された行のユーザー名、IDを取得する。
+                var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
+                var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
 
-                Update Update = new Update(username.ToString());
+                Update Update = new Update(userId.ToString(), username.ToString());
                 Update.Show();
+            }
+            // データ削除ボタン
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "deleteBtn")
+            {
+                // 削除する行の主キーを取得
+                int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
 
+                if (MessageBox.Show("この行を削除してもよろしいですか？", "確認",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    DeleteData(id);
+                }
+            }
+        }
+        /// <summary>
+        /// 削除実行時の成否イベント
+        /// </summary>
+        /// <param name="id"></param>
+        private void DeleteData(int id)
+        {
+            var dbHelper = new DatabaseHelper();
+            using (var con = dbHelper.OpenConnection())
+            {
+                try
+                {
+                    // SQLクエリ
+                    string query = "DELETE FROM users WHERE user_id = @UserId";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@UserId", id);
+
+                        int result = cmd.ExecuteNonQuery();
+                        if (result > 0)
+                        {
+                            // DataGridViewからも行を削除
+                            MessageBox.Show("データが削除されました。");
+                            dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
+                        }
+                        else
+                        {
+                            MessageBox.Show("データ削除に失敗しました。");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("エラーが発生しました: " + ex.Message);
+                }
             }
         }
     }

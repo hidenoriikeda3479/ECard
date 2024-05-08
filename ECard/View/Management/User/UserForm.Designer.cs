@@ -75,7 +75,7 @@
             // 
             // btnLan
             // 
-            this.btnLan.Location = new System.Drawing.Point(505, 62);
+            this.btnLan.Location = new System.Drawing.Point(460, 62);
             this.btnLan.Name = "btnLan";
             this.btnLan.Size = new System.Drawing.Size(92, 24);
             this.btnLan.TabIndex = 9;
@@ -85,7 +85,7 @@
             // 
             // btnSae
             // 
-            this.btnSae.Location = new System.Drawing.Point(505, 12);
+            this.btnSae.Location = new System.Drawing.Point(460, 12);
             this.btnSae.Name = "btnSae";
             this.btnSae.Size = new System.Drawing.Size(92, 24);
             this.btnSae.TabIndex = 10;
@@ -100,7 +100,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(601, 380);
+            this.dataGridView1.Size = new System.Drawing.Size(554, 380);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -117,7 +117,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(609, 478);
+            this.ClientSize = new System.Drawing.Size(562, 478);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnSae);
