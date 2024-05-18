@@ -33,70 +33,7 @@ namespace ECard.User
         /// <param name="e"></param>
         private void btnSae_Click(object sender, EventArgs e)
         {
-            dataGridView1.Columns.Clear();
-
-            // DBの接続情報
-            var dbHelper = new DatabaseHelper();
-
-            // 接続を開く
-            var con = dbHelper.OpenConnection();
-
-            // SQL
-            string sql = $"SELECT * FROM users Where 1 = 1";
-            dbHelper.ExecuteQuery(con, sql);
-
-            // 更新ボタン列を作成
-            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
-            buttonColumn.HeaderText = "更新"; // 列のヘッダーテキスト
-            buttonColumn.Name = "ActionColumn"; // 列の名前
-            buttonColumn.Text = "編集"; // ボタンに表示されるテキスト
-            buttonColumn.UseColumnTextForButtonValue = true; //全てのボタンに"編集"と表示されます
-
-            // 削除ボタン列を作成
-            DataGridViewButtonColumn deleteBtn = new DataGridViewButtonColumn();
-            deleteBtn.HeaderText = "データから削除"; // 列のヘッダーテキスト
-            deleteBtn.Name = "deleteBtn"; // 列の名前
-            deleteBtn.Text = "削除"; // ボタンに表示されるテキスト
-            deleteBtn.UseColumnTextForButtonValue = true; // 全てのボタンに"削除"と表示されます
-
-            // dataGridView1の最初の列としてボタン列を追加
-            dataGridView1.Columns.Insert(0, buttonColumn);
-
-            // dataGridView1の最初の列としてボタン列を追加
-            dataGridView1.Columns.Insert(1, deleteBtn);
-
-            // ユーザー名が入力されている
-            if (txtUser.Text != "")
-            {
-                sql += $" And username Like '%{txtUser.Text}%'";
-            }
-            // アカウント作成日が入力されている
-            if (checkBox1.Checked)
-            {
-                sql += $" And created_at = '{dateTimePicker.Value.ToString("yyyy-MM-dd")}'";
-            }
-
-            // SQL時以降
-            DataTable result = dbHelper.ExecuteQuery(con, sql);
-
-            List<UserViewModel> list = new List<UserViewModel>();
-
-            foreach (DataRow row in result.Rows)
-            {
-                UserViewModel model = new UserViewModel();
-
-                model.UserId = int.Parse(row["user_id"].ToString());
-                model.UserName = row["username"]?.ToString();
-                model.CreatedAt = DateTime.Parse(row["created_at"].ToString());
-
-                // nullの有無を確認
-                if (model.UpdateAt != null)
-                {
-                    model.UpdateAt = DateTime.Parse(row["update_at"].ToString());
-                }
-                list.Add(model);
-            }
-            dataGridView1.DataSource = list;
+            Sae();
         }
 
         /// <summary>
@@ -108,11 +45,6 @@ namespace ECard.User
         {
             RegistrationForm RegistrationForm = new RegistrationForm();
             RegistrationForm.Show();
-        }
-
-        private void UserForm_Load(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>
@@ -167,7 +99,7 @@ namespace ECard.User
                         {
                             // DataGridViewからも行を削除
                             MessageBox.Show("データが削除されました。");
-                            dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
+                           
                         }
                         else
                         {
@@ -180,6 +112,80 @@ namespace ECard.User
                     MessageBox.Show("エラーが発生しました: " + ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// 検索ボタンクリックイベントメソッド
+        /// </summary>
+        private void Sae()
+        {
+            dataGridView1.Columns.Clear();
+
+            // DBの接続情報
+            var dbHelper = new DatabaseHelper();
+
+            // 接続を開く
+            var con = dbHelper.OpenConnection();
+
+            // SQL
+            string sql = $"SELECT * FROM users Where 1 = 1";
+            dbHelper.ExecuteQuery(con, sql);
+
+            // 更新ボタン列を作成
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+            buttonColumn.HeaderText = "更新"; // 列のヘッダーテキスト
+            buttonColumn.Name = "ActionColumn"; // 列の名前
+            buttonColumn.Text = "編集"; // ボタンに表示されるテキスト
+            buttonColumn.UseColumnTextForButtonValue = true; //全てのボタンに"編集"と表示されます
+
+            // 削除ボタン列を作成
+            DataGridViewButtonColumn deleteBtn = new DataGridViewButtonColumn();
+            deleteBtn.HeaderText = "データ削除"; // 列のヘッダーテキスト
+            deleteBtn.Name = "deleteBtn"; // 列の名前
+            deleteBtn.Text = "削除"; // ボタンに表示されるテキスト
+            deleteBtn.UseColumnTextForButtonValue = true; // 全てのボタンに"削除"と表示されます
+
+            // dataGridView1の最初の列としてボタン列を追加
+            dataGridView1.Columns.Insert(0, buttonColumn);
+
+            // dataGridView1の最初の列としてボタン列を追加
+            dataGridView1.Columns.Insert(1, deleteBtn);
+
+            // ユーザー名が入力されている
+            if (txtUser.Text != "")
+            {
+                sql += $" And username Like '%{txtUser.Text}%'";
+            }
+            // アカウント作成日が入力されている
+            if (checkBox1.Checked)
+            {
+                sql += $" And created_at = '{dateTimePicker.Value.ToString("yyyy-MM-dd")}'";
+            }
+
+            // SQL時以降
+            DataTable result = dbHelper.ExecuteQuery(con, sql);
+
+            List<UserViewModel> list = new List<UserViewModel>();
+
+            foreach (DataRow row in result.Rows)
+            {
+                UserViewModel model = new UserViewModel();
+
+                model.UserId = int.Parse(row["user_id"].ToString());
+                model.UserName = row["username"]?.ToString();
+                model.CreatedAt = DateTime.Parse(row["created_at"].ToString());
+
+                // nullの有無を確認
+                if (model.UpdateAt != null)
+                {
+                    model.UpdateAt = DateTime.Parse(row["update_at"].ToString());
+                }
+                list.Add(model);
+            }
+            dataGridView1.DataSource = list;
+        }
+        private void UserForm_Load(object sender, EventArgs e)
+        {
         }
     }
 }

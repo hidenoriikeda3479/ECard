@@ -47,13 +47,15 @@ namespace ECard
             {
                 try
                 {
-                    // SQLクエリ
-                    string query = "UPDATE users SET username = @UserName, password_hash = @Chanps WHERE user_id = @UserId";
+                    // SQL
+                    string query = "UPDATE users SET username = @UserName, password_hash = @Chanps, update_at = @UpdateAt WHERE user_id = @UserId";
+
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@UserName", txtUser.Text);
                         cmd.Parameters.AddWithValue("@Chanps", txtChanps.Text);
                         cmd.Parameters.AddWithValue("@UserId", UserId);
+                        cmd.Parameters.AddWithValue("@UpdateAt", DateTime.Now);
 
                         int result = cmd.ExecuteNonQuery();
                         if (result > 0)
@@ -67,8 +69,6 @@ namespace ECard
                         {
                             MessageBox.Show("更新に失敗しました。");
                         }
-                                            // フォームを閉じる
-                    this.Close();
                     }
                 }
                 catch (Exception ex)
