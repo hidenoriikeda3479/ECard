@@ -12,7 +12,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
+// TODOリスト
 
 namespace ECard.User
 {
@@ -21,6 +23,10 @@ namespace ECard.User
     /// </summary>
     public partial class UserForm : Form
     {
+
+        // SQLクエリ
+        string sql = $"SELECT * FROM users Where 1 = 1";
+
         public UserForm()
         {
             InitializeComponent();
@@ -33,7 +39,7 @@ namespace ECard.User
         /// <param name="e"></param>
         private void btnSae_Click(object sender, EventArgs e)
         {
-            Sae();
+            SearchBtn();
         }
 
         /// <summary>
@@ -54,29 +60,11 @@ namespace ECard.User
         /// <param name="e"></param>
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // 更新編集ボタン
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "ActionColumn")
-            {
-                // 押された行のユーザー名、IDを取得する。
-                var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
-                var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
+            UpdateBtn(e);
 
-                Update Update = new Update(userId.ToString(), username.ToString());
-                Update.Show();
-            }
-            // データ削除ボタン
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "deleteBtn")
-            {
-                // 削除する行の主キーを取得
-                int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
-
-                if (MessageBox.Show("この行を削除してもよろしいですか？", "確認",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    DeleteData(id);
-                }
-            }
+            DeleteBtn(e);
         }
+
         /// <summary>
         /// 削除実行時の成否イベント
         /// </summary>
@@ -99,7 +87,7 @@ namespace ECard.User
                         {
                             // DataGridViewからも行を削除
                             MessageBox.Show("データが削除されました。");
-                           
+                            SearchBtn();
                         }
                         else
                         {
@@ -113,12 +101,13 @@ namespace ECard.User
                 }
             }
         }
-
+        #region イベント一覧
         /// <summary>
         /// 検索ボタンクリックイベントメソッド
         /// </summary>
-        private void Sae()
+        private void SearchBtn()
         {
+            // dataGridViewクリア
             dataGridView1.Columns.Clear();
 
             // DBの接続情報
@@ -127,10 +116,22 @@ namespace ECard.User
             // 接続を開く
             var con = dbHelper.OpenConnection();
 
-            // SQL
-            string sql = $"SELECT * FROM users Where 1 = 1";
             dbHelper.ExecuteQuery(con, sql);
 
+            DataGridView();
+
+            UserCheck();
+
+            CheckBox();
+
+            DataRef();
+        }
+
+        /// <summary>
+        /// DataGridView列作成メソッド
+        /// </summary>
+        private void DataGridView()
+        {
             // 更新ボタン列を作成
             DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
             buttonColumn.HeaderText = "更新"; // 列のヘッダーテキスト
@@ -150,23 +151,50 @@ namespace ECard.User
 
             // dataGridView1の最初の列としてボタン列を追加
             dataGridView1.Columns.Insert(1, deleteBtn);
+        }
 
+        /// <summary>
+        /// ユーザー名検索イベント
+        /// </summary>
+        private void UserCheck()
+        {
             // ユーザー名が入力されている
             if (txtUser.Text != "")
             {
                 sql += $" And username Like '%{txtUser.Text}%'";
             }
-            // アカウント作成日が入力されている
+        }
+
+        /// <summary>
+        /// 作成日検索イベント
+        /// </summary>
+        private void CheckBox()
+        {
+            // チェックの有無
             if (checkBox1.Checked)
             {
-                sql += $" And created_at = '{dateTimePicker.Value.ToString("yyyy-MM-dd")}'";
+                // 登録日から検索
+                sql += $" And CONVERT(date, created_at) = '{dateTimePicker.Value.ToString("yyyy/MM/dd")}'";
             }
+        }
+
+        /// <summary>
+        /// DataGridView反映イベント
+        /// </summary>
+        private void DataRef()
+        {
+            // DBの接続情報
+            var dbHelper = new DatabaseHelper();
+
+            // 接続を開く
+            var con = dbHelper.OpenConnection();
 
             // SQL時以降
             DataTable result = dbHelper.ExecuteQuery(con, sql);
 
             List<UserViewModel> list = new List<UserViewModel>();
 
+            // データテーブルをデータグリッドビューへ反映
             foreach (DataRow row in result.Rows)
             {
                 UserViewModel model = new UserViewModel();
@@ -184,7 +212,49 @@ namespace ECard.User
             }
             dataGridView1.DataSource = list;
         }
+
+        /// <summary>
+        /// 更新ボタンイベント
+        /// </summary>
+        private void UpdateBtn(DataGridViewCellEventArgs e)
+        {
+            // 更新編集ボタン
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "ActionColumn")
+            {
+                // 押された行のユーザー名、IDを取得する。
+                var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
+                var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
+
+                Update Update = new Update(userId.ToString(), username.ToString());
+                Update.Show();
+            }
+        }
+
+        /// <summary>
+        /// 削除ボタンイベント
+        /// </summary>
+        private void DeleteBtn(DataGridViewCellEventArgs e)
+        {
+            // データ削除ボタン
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "deleteBtn")
+            {
+                // 削除する行の主キーを取得
+                int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
+
+                if (MessageBox.Show("この行を削除してもよろしいですか？", "確認",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    DeleteData(id);
+                }
+            }
+        }
+        #endregion
+
         private void UserForm_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void dateTimePicker_ValueChanged(object sender, EventArgs e)
         {
         }
     }

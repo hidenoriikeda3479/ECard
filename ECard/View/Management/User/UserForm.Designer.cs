@@ -62,6 +62,7 @@
             this.dateTimePicker.Name = "dateTimePicker";
             this.dateTimePicker.Size = new System.Drawing.Size(169, 24);
             this.dateTimePicker.TabIndex = 6;
+            this.dateTimePicker.ValueChanged += new System.EventHandler(this.dateTimePicker_ValueChanged);
             // 
             // label4
             // 
@@ -110,7 +111,7 @@
             this.checkBox1.Location = new System.Drawing.Point(274, 63);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(18, 17);
-            this.checkBox1.TabIndex = 12;
+            this.checkBox1.TabIndex = 14;
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // UserForm
