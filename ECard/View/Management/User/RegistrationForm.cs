@@ -34,6 +34,7 @@ namespace ECard
         /// <param name="e"></param>
         private void btnLan_Click(object sender, EventArgs e)
         {
+            // ユーザー登録
             UserCon();
         }
 
@@ -103,6 +104,7 @@ namespace ECard
             }
             return true;
         }
+
         /// <summary>
         /// ユーザー登録処理
         /// </summary>

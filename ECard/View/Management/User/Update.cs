@@ -34,7 +34,9 @@ namespace ECard
         /// <param name="e"></param>
         private void btnUp_Click(object sender, EventArgs e)
         {
+            // 入力確認
             InputCheck();
+            // アップデート可不可
             UpdateCheck();        
         }
 

@@ -23,10 +23,6 @@ namespace ECard.User
     /// </summary>
     public partial class UserForm : Form
     {
-
-        // SQLクエリ
-        string sql = $"SELECT * FROM users Where 1 = 1";
-
         public UserForm()
         {
             InitializeComponent();
@@ -39,6 +35,7 @@ namespace ECard.User
         /// <param name="e"></param>
         private void btnSae_Click(object sender, EventArgs e)
         {
+            // 検索処理
             SearchBtn();
         }
 
@@ -54,15 +51,22 @@ namespace ECard.User
         }
 
         /// <summary>
-        /// グリッドのボタンを開く
+        /// グリッドのボタンクリック
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            UpdateBtn(e);
-
-            DeleteBtn(e);
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "ActionColumn")
+            {
+                // 更新ボタン
+                UpdateBtn(e);
+            }
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "deleteBtn")
+            {
+                // 削除ボタン
+                DeleteBtn(e);
+            }
         }
 
         /// <summary>
@@ -103,7 +107,7 @@ namespace ECard.User
         }
         #region イベント一覧
         /// <summary>
-        /// 検索ボタンクリックイベントメソッド
+        /// 検索ボタンクリックイベント
         /// </summary>
         private void SearchBtn()
         {
@@ -116,15 +120,18 @@ namespace ECard.User
             // 接続を開く
             var con = dbHelper.OpenConnection();
 
-            dbHelper.ExecuteQuery(con, sql);
+            /// SQLクエリ
+            string sql = $"SELECT * FROM users Where 1 = 1";
 
+            // 検索
+            sql += SearchCheck();
+
+            DataTable result = dbHelper.ExecuteQuery(con, sql);
+
+            // データグリッドビュー列作成
             DataGridView();
 
-            UserCheck();
-
-            CheckBox();
-
-            DataRef();
+            dataGridView1.DataSource = DataRef(result);
         }
 
         /// <summary>
@@ -154,44 +161,30 @@ namespace ECard.User
         }
 
         /// <summary>
-        /// ユーザー名検索イベント
+        /// 検索イベント
         /// </summary>
-        private void UserCheck()
+        private string SearchCheck()
         {
             // ユーザー名が入力されている
             if (txtUser.Text != "")
             {
-                sql += $" And username Like '%{txtUser.Text}%'";
+                return $" And username Like '%{txtUser.Text}%'";
             }
-        }
 
-        /// <summary>
-        /// 作成日検索イベント
-        /// </summary>
-        private void CheckBox()
-        {
             // チェックの有無
             if (checkBox1.Checked)
             {
                 // 登録日から検索
-                sql += $" And CONVERT(date, created_at) = '{dateTimePicker.Value.ToString("yyyy/MM/dd")}'";
+                return $" And CONVERT(date, created_at) = '{dateTimePicker.Value.ToString("yyyy/MM/dd")}'";
             }
+            return string .Empty ;
         }
 
         /// <summary>
         /// DataGridView反映イベント
         /// </summary>
-        private void DataRef()
+        private List<UserViewModel> DataRef(DataTable result)
         {
-            // DBの接続情報
-            var dbHelper = new DatabaseHelper();
-
-            // 接続を開く
-            var con = dbHelper.OpenConnection();
-
-            // SQL時以降
-            DataTable result = dbHelper.ExecuteQuery(con, sql);
-
             List<UserViewModel> list = new List<UserViewModel>();
 
             // データテーブルをデータグリッドビューへ反映
@@ -210,7 +203,7 @@ namespace ECard.User
                 }
                 list.Add(model);
             }
-            dataGridView1.DataSource = list;
+            return list;
         }
 
         /// <summary>
@@ -218,16 +211,12 @@ namespace ECard.User
         /// </summary>
         private void UpdateBtn(DataGridViewCellEventArgs e)
         {
-            // 更新編集ボタン
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "ActionColumn")
-            {
                 // 押された行のユーザー名、IDを取得する。
                 var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
                 var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
 
                 Update Update = new Update(userId.ToString(), username.ToString());
                 Update.Show();
-            }
         }
 
         /// <summary>
@@ -235,27 +224,14 @@ namespace ECard.User
         /// </summary>
         private void DeleteBtn(DataGridViewCellEventArgs e)
         {
-            // データ削除ボタン
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "deleteBtn")
-            {
-                // 削除する行の主キーを取得
-                int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
-
                 if (MessageBox.Show("この行を削除してもよろしいですか？", "確認",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    DeleteData(id);
-                }
+                    // 削除する行の主キーを取得
+                    int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
+                　　DeleteData(id);
+    　     　   }
             }
         }
         #endregion
-
-        private void UserForm_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void dateTimePicker_ValueChanged(object sender, EventArgs e)
-        {
-        }
     }
-}
