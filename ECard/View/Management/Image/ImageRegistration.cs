@@ -16,11 +16,10 @@ namespace ECard.View.Management.Image
 {
     public partial class ImageRegistration : Form
     {
-        //選択ファイル情報取得のグローバル変数宣言
+        /// <summary>
+        /// 選択ファイル情報取得のグローバル変数宣言
+        /// </summary>
         private string selectFile;
-
-        //SQL実行のグローバル変数宣言
-        private string sql;
 
         public ImageRegistration()
         {

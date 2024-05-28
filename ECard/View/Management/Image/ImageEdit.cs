@@ -83,7 +83,7 @@ namespace ECard.View.Management.Image
             var SqlServerOpen = dbHelper.OpenConnection();
 
             //SQLの更新
-            string sql = "UPDATE images  SET  $ Description = '{textBox1.Text}' WHERE  $ image_id = '{ImageId}'";
+            string sql = $"UPDATE images  SET Description = '{textBox1.Text}' WHERE image_id = '{ImageId}'";
 
             //SQL実行結果を取得
             dbHelper.ExecuteQuery(SqlServerOpen, sql);
