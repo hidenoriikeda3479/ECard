@@ -73,7 +73,7 @@
     <Compile Include="View\Management\Image\ImageEdit.Designer.cs">
       <DependentUpon>ImageEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Management\Image\ImageViewModel.cs" />
+    <Compile Include="Model\ImageViewModel.cs" />
     <Compile Include="View\Management\Image\ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,7 +100,7 @@
     <Compile Include="View\Management\User\UserForm.Designer.cs">
       <DependentUpon>UserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Management\User\UserViewModel.cs" />
+    <Compile Include="Model\UserViewModel.cs" />
     <EmbeddedResource Include="View\Management\User\RegistrationForm.resx">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -147,8 +147,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
