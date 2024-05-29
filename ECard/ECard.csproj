@@ -67,11 +67,24 @@
     <Compile Include="View\Main\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Management\Image\ImageEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\Image\ImageEdit.Designer.cs">
+      <DependentUpon>ImageEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Management\Image\ImageViewModel.cs" />
     <Compile Include="View\Management\Image\ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Management\Image\ImageForm.Designer.cs">
       <DependentUpon>ImageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Management\Image\ImageRegistration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\Image\ImageRegistration.Designer.cs">
+      <DependentUpon>ImageRegistration.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Management\ManagementForm.cs">
       <SubType>Form</SubType>
@@ -96,6 +109,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Management\Image\ImageEdit.resx">
+      <DependentUpon>ImageEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Management\Image\ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Management\Image\ImageRegistration.resx">
+      <DependentUpon>ImageRegistration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Management\ManagementForm.resx">
       <DependentUpon>ManagementForm.cs</DependentUpon>
