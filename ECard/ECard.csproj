@@ -48,6 +48,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\DatabaseHelper.cs" />
+    <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="View\Management\User\RegistrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\User\RegistrationForm.Designer.cs">
+      <DependentUpon>RegistrationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Management\User\Update.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\User\Update.Designer.cs">
+      <DependentUpon>Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Main\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +100,13 @@
     <Compile Include="View\Management\User\UserForm.Designer.cs">
       <DependentUpon>UserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Management\User\UserViewModel.cs" />
+    <EmbeddedResource Include="View\Management\User\RegistrationForm.resx">
+      <DependentUpon>RegistrationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Management\User\Update.resx">
+      <DependentUpon>Update.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +131,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\Management\User\UserForm.resx">
+      <DependentUpon>UserForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
