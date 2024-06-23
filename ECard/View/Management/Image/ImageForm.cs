@@ -21,10 +21,13 @@ namespace ECard.Management.Image
         /// SQLコマンドグローバル変数宣言
         /// </summary>
         private string sql;
+        private int login;
 
-        public ImageForm()
+        public ImageForm(int UserLogin)
         {
             InitializeComponent();
+
+            login = UserLogin;
         }
 
         /// <summary>
@@ -51,11 +54,24 @@ namespace ECard.Management.Image
             //データベース削除
             dataGridView1.Columns.Clear();
 
-            //SQL実行メソッド呼び出し
-            SqlProcess();
+            //ユーザーログイン条件
+            if(login == 1) 
+            {
+                //SQL実行メソッド呼び出し
+                SqlProcess();
 
-            //編集ボタン、削除ボタン追加メソッド呼び出し
-            DataGridViewButtonColumnAddition();
+                //登録ボタン追加メソッド呼び出し
+                RegistrationButtonColumnAddition();
+            }
+            //管理者ログイン条件
+            else if(login == 2) 
+            {
+                //SQL実行メソッド呼び出し
+                SqlProcess();
+
+                //編集ボタン、削除ボタン追加メソッド呼び出し
+                DataGridViewButtonColumnAddition();
+            }
 
         }
 
@@ -159,6 +175,19 @@ namespace ECard.Management.Image
 
             return list;
         }
+        /// <summary>
+        /// 登録ボタン追加メソッド
+        /// </summary>
+        private void RegistrationButtonColumnAddition()
+        {
+            DataGridViewButtonColumn buttonColumn1 = new DataGridViewButtonColumn();
+            buttonColumn1.HeaderText = "Registration";//列のヘッダーテキスト
+            buttonColumn1.Name = "RegistrationColumn";//列の名前
+            buttonColumn1.Text = "登録";//ボタンに表示されるテキスト
+            buttonColumn1.UseColumnTextForButtonValue = true;
+
+            dataGridView1.Columns.Insert(0, buttonColumn1);
+        }
 
         /// <summary>
         /// 編集ボタン、削除ボタン追加メソッド
@@ -230,7 +259,18 @@ namespace ECard.Management.Image
                 dbHelper.ExecuteQuery(SqlServerOpen, DeleteSql);
             
         }
+        private void RegistrationColumnClick(DataGridViewCellEventArgs e)
+        {
+            //選択された行の画像データ取得
+            var ImageDateColumn = dataGridView1.Rows[e.RowIndex].Cells["ImageDate"].Value;
 
-        
+            //選択された行のid情報を取得
+            var ImageIdColumn = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ImageId"].Value);
+
+            //選択された行の説明取得
+            var DescriptionColumn = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Description"].Value);
+        }
+
+
     }
 }

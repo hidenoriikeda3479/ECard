@@ -1,4 +1,5 @@
 ﻿using ECard.User;
+using ECard.View.Management;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +38,20 @@ namespace ECard
 
             // 画面をモードレスで表示
             managementForm.Show();
+        }
+
+        /// <summary>
+        ///設定ボタンクリックイベント 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+            //設定画面を初期化
+            var settingForm = new SettingForm();
+
+            //画面をモードレスで表示
+            settingForm.Show();
         }
     }
 }

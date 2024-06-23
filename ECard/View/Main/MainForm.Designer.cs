@@ -75,6 +75,7 @@
             this.btnSetting.TabIndex = 1;
             this.btnSetting.Text = "設定";
             this.btnSetting.UseVisualStyleBackColor = true;
+            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
             // label1
             // 

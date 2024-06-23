@@ -73,6 +73,12 @@
     <Compile Include="View\Management\Image\ImageRegistration.Designer.cs">
       <DependentUpon>ImageRegistration.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Management\Image\UserCardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\Image\UserCardForm.Designer.cs">
+      <DependentUpon>UserCardForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Management\ManagementForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +87,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\Management\SettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\SettingForm.Designer.cs">
+      <DependentUpon>SettingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Management\User\UserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +111,9 @@
     <EmbeddedResource Include="View\Management\Image\ImageRegistration.resx">
       <DependentUpon>ImageRegistration.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Management\Image\UserCardForm.resx">
+      <DependentUpon>UserCardForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Management\ManagementForm.resx">
       <DependentUpon>ManagementForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +126,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\Management\SettingForm.resx">
+      <DependentUpon>SettingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
