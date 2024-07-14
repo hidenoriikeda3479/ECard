@@ -49,6 +49,13 @@
   <ItemGroup>
     <Compile Include="Common\DatabaseHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="Model\ImageCardViewModel.cs" />
+    <Compile Include="View\Management\Image\ImageCardRegistration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\Image\ImageCardRegistration.Designer.cs">
+      <DependentUpon>ImageCardRegistration.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Management\SettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +114,9 @@
       <DependentUpon>UserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\UserViewModel.cs" />
+    <EmbeddedResource Include="View\Management\Image\ImageCardRegistration.resx">
+      <DependentUpon>ImageCardRegistration.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Management\SettingForm.resx">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </EmbeddedResource>

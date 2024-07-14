@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ECard.Common;
 using ECard.Management.Image;
+using ECard.View.Management.Image;
+using ECard.View.Management.User;
 
 namespace ECard.View.Management
 {
@@ -17,6 +21,7 @@ namespace ECard.View.Management
         /// ユーザーログインのグローバル変数宣言
         /// </summary>
         private int UserLogin = 1;
+
         public SettingForm()
         {
             InitializeComponent();
@@ -24,7 +29,6 @@ namespace ECard.View.Management
 
         private void btnImageForm_Click(object sender, EventArgs e)
         {
-            
 
             // 画像設定画面を初期化
             var userForm = new ImageForm(UserLogin);
@@ -32,5 +36,6 @@ namespace ECard.View.Management
             // 画面をモードレスで表示
             userForm.Show();
         }
+          
     }
 }

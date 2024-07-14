@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ECard.Common;
 using ECard.User;
 using ECard.View.Management.Image;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ECard.Management.Image
 {
@@ -21,6 +22,10 @@ namespace ECard.Management.Image
         /// SQLコマンドグローバル変数宣言
         /// </summary>
         private string sql;
+
+        /// <summary>
+        /// ユーザーid変数宣言
+        /// </summary>
         private int login;
 
         public ImageForm(int UserLogin)
@@ -28,6 +33,7 @@ namespace ECard.Management.Image
             InitializeComponent();
 
             login = UserLogin;
+
         }
 
         /// <summary>
@@ -62,6 +68,7 @@ namespace ECard.Management.Image
 
                 //登録ボタン追加メソッド呼び出し
                 RegistrationButtonColumnAddition();
+
             }
             //管理者ログイン条件
             else if(login == 2) 
@@ -76,7 +83,7 @@ namespace ECard.Management.Image
         }
 
         /// <summary>
-        /// 編集ボタン、削除ボタンクリックイベント
+        /// 編集ボタン、削除ボタン、登録ボタンクリックイベント
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -98,6 +105,12 @@ namespace ECard.Management.Image
                 //sql実行メソッド呼び出し
                 SqlProcess();
             }
+            //皇帝登録ボタンが押された条件を満たした処理
+            else if(dataGridView1.Columns[e.ColumnIndex].Name == "RegistrationColumn")
+            {
+                //登録ボタンクリックメソッド呼び出し
+                RegistrationButtonClick(e);
+            }
 
         }
 
@@ -116,20 +129,24 @@ namespace ECard.Management.Image
             //sql検索構文
             sql = " SELECT * FROM images WHERE 1 = 1 ";
 
-            //検索チェックが押された条件を満たした処理
-            if (checkBox1.Checked == true)
-            {
-                //登録日から検索
-                sql += $" AND CONVERT ( date , created_at ) = '{dateTimePicker1.Value.ToString("yyyy/MM/dd")}'";
-            }
-
             //SQL実行結果を取得
             DataTable result = dbHelper.ExecuteQuery(SqlServerOpen, sql);
 
+            //画像モデムへデータテーブル情報を反映
             List<ImageViewModel> list = SetImageList(result);
 
-            //データソースへ情報取得
-            dataGridView1.DataSource = list;
+            //sqlの初期化
+            var SqlServerSelect = list.AsEnumerable();
+
+            //チェックボックスがされている場合
+            if(checkBox1.Checked == true)
+            {
+                //Sql登録日と日付検索が一致したレコードを取得
+                SqlServerSelect = list.Where(n => n.CreatedAt.Date == dateTimePicker1.Value.Date);
+            }
+
+            //データグリッドビューへ反映
+            dataGridView1.DataSource = SqlServerSelect.ToList();
 
         }
 
@@ -181,12 +198,36 @@ namespace ECard.Management.Image
         private void RegistrationButtonColumnAddition()
         {
             DataGridViewButtonColumn buttonColumn1 = new DataGridViewButtonColumn();
-            buttonColumn1.HeaderText = "Registration";//列のヘッダーテキスト
+            buttonColumn1.HeaderText = "画像カード登録";//列のヘッダーテキスト
             buttonColumn1.Name = "RegistrationColumn";//列の名前
             buttonColumn1.Text = "登録";//ボタンに表示されるテキスト
             buttonColumn1.UseColumnTextForButtonValue = true;
 
             dataGridView1.Columns.Insert(0, buttonColumn1);
+        }
+
+        /// <summary>
+        /// 登録ボタンクリックイベント
+        /// </summary>
+        /// <param name="e"></param>
+        private void RegistrationButtonClick(DataGridViewCellEventArgs e)
+        {
+            //選択された行の画像データ取得
+            var ImageDateColumn = dataGridView1.Rows[e.RowIndex].Cells["ImageDate"].Value;
+
+            //選択された行のid情報を取得
+            var ImageIdColumn = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ImageId"].Value);
+
+            //選択された行の説明取得
+            var DescriptionColumn = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Description"].Value);
+
+            //ユーザーカード画面コードへデータ移動
+            var UserCardRegistration = new ImageCardRegistration(ImageDateColumn, DescriptionColumn, ImageIdColumn , login);
+
+            //対象画像のユーザーカード画面に遷移
+            UserCardRegistration.Show();
+
+            
         }
 
         /// <summary>
@@ -203,6 +244,8 @@ namespace ECard.Management.Image
                 buttonColumn1.UseColumnTextForButtonValue = true;
 
                 dataGridView1.Columns.Insert(0, buttonColumn1);
+                
+                
 
                 //削除ボタン列を作成
                 DataGridViewButtonColumn buttonColumn2 = new DataGridViewButtonColumn();
@@ -259,18 +302,6 @@ namespace ECard.Management.Image
                 dbHelper.ExecuteQuery(SqlServerOpen, DeleteSql);
             
         }
-        private void RegistrationColumnClick(DataGridViewCellEventArgs e)
-        {
-            //選択された行の画像データ取得
-            var ImageDateColumn = dataGridView1.Rows[e.RowIndex].Cells["ImageDate"].Value;
-
-            //選択された行のid情報を取得
-            var ImageIdColumn = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ImageId"].Value);
-
-            //選択された行の説明取得
-            var DescriptionColumn = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Description"].Value);
-        }
-
 
     }
 }
