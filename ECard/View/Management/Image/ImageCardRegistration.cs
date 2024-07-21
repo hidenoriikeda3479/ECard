@@ -19,6 +19,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ECard.View.Management.Image
 {
+    /// <summary>
+    /// 画像カード登録画面
+    /// </summary>
     public partial class ImageCardRegistration : Form
     {
         /// <summary>
@@ -52,16 +55,6 @@ namespace ECard.View.Management.Image
         private int CheckFlag;
 
         /// <summary>
-        /// SQL登録状態:画像ID変数宣言
-        /// </summary>
-        private int SaveImageId;
-
-        /// <summary>
-        /// SQL登録状態:カードタイプ変数宣言
-        /// </summary>
-        private int SaveCardType;
-
-        /// <summary>
         /// 画像カード情報画面のコンストラクタ
         /// </summary>
         /// <param name="ImageDateColumn"></param>
@@ -78,14 +71,23 @@ namespace ECard.View.Management.Image
         }
 
         /// <summary>
-        /// 画像カード情報呼び出しイベント
+        /// 画面カード登録情報反映イベント
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void UserCardRegistration_Load(object sender, EventArgs e)
         {
-            //画像カード情報テーブル接続メソッド呼び出し
+            //画面カード登録情報取得メソッド呼び出し
             SqlServerAccess();
+
+            //皇帝カード更新、登録情報メソッド呼び出し
+            KingCardTypeConditionalbranch();
+
+            //貧民カード更新、登録情報メソッド呼び出し
+            PoorpeopleCardTypeConditionalbranch();
+
+            //平民カード更新、登録情報メソッド
+            CommonerCardTypeConditionalbranch();
         }
 
         /// <summary>
@@ -95,58 +97,192 @@ namespace ECard.View.Management.Image
         /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
-            //チェックボックス選択メソッド
-            checkboxflag();
 
-            //画像カード情報テーブル接続メソッド呼び出し
+            //画面カード登録情報取得メソッド
             SqlServerAccess();
 
             //SQL更新フラグの条件を満たした処理
-            if (CheckFlag == 1)
+            if (ConditionalbranchModel.SqlUpdateFlag == CheckFlag)
             {
-                // 接続情報を渡す
-                var dbHelper = new DatabaseHelper();
-
-                // 接続を開く
-                var SqlServerOpen = dbHelper.OpenConnection();
-
-                //SQLの更新
-                //string sql = $"UPDATE images  SET Description = '{textBox1.Text}' WHERE image_id = '{ImageId}'";
-                string SqlUpdate = $"UPDATE images_card  " +
-                                    $"SET  user_id = '{UserLogin}' , " +
-                                    $"image_id = '{ImageId}' ," +
-                                    $"card_type = '{CardType}' ," +
-                                    $"description = '{textBox1.Text}' ," +
-                                    $"created_at = '{DateTime.Now}' ," +
-                                    $"update_at ='{DateTime.Now}' " +
-                                    $"WHERE user_id = '{UserLogin}' AND " +
-                                    $"image_id = '{SaveImageId}' AND " +
-                                    $"card_type = '{SaveCardType}'";
-
-                //SQL実行結果を取得
-                DataTable result = dbHelper.ExecuteQuery(SqlServerOpen, SqlUpdate);
-
-                //画像カード情報テーブル接続メソッド呼び出し
+                //画面カード登録情報取得メソッド呼び出し
                 SqlServerAccess();
+
+                //皇帝カード更新、登録情報メソッド呼び出し
+                KingCardTypeConditionalbranch();
+
+                //貧民カード更新、登録情報メソッド呼び出し
+                PoorpeopleCardTypeConditionalbranch();
+
+                //平民カード更新、登録情報メソッド
+                CommonerCardTypeConditionalbranch();
+
+                //Sql更新メソッド呼び出し
+                SqlUpdateProcess();
+
+                //画面カード登録情報取得メソッド呼び出し
+                SqlServerAccess();
+
+                //皇帝カード更新、登録情報メソッド呼び出し
+                KingCardTypeConditionalbranch();
+
+                //貧民カード更新、登録情報メソッド呼び出し
+                PoorpeopleCardTypeConditionalbranch();
+
+                //平民カード更新、登録情報メソッド
+                CommonerCardTypeConditionalbranch();
 
             }
 
             //SQL登録
-            if(CheckFlag == 0)
+            if(ConditionalbranchModel.SqlRegistrationFlag == CheckFlag)
             {
-                //sqlデータベース取得実行メソッド呼び出し
+                //Sql取得メソッド呼び出し
                 SqlProcess();
 
-                //画像カード情報テーブル接続メソッド呼び出し
+                //画面カード登録情報取得メソッド呼び出し
                 SqlServerAccess();
+
+                //皇帝カード更新、登録情報メソッド呼び出し
+                KingCardTypeConditionalbranch();
+
+                //貧民カード更新、登録情報メソッド呼び出し
+                PoorpeopleCardTypeConditionalbranch();
+
+                //平民カード更新、登録情報メソッド
+                CommonerCardTypeConditionalbranch();
             }
 
         }
 
         /// <summary>
-        /// sqlデータベース取得実行メソッド
+        /// 皇帝チェックイベント
         /// </summary>
-        private int SqlProcess()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+            //貧民チェック選択禁止
+            checkBox2.Enabled = false;
+
+            //平民チェック選択禁止
+            checkBox3.Enabled = false;
+
+            //SQL更新条件を満たした処理：皇帝
+            if (SaveImageCardDataModel.KingCardTypeNo == ConditionalbranchModel.KingCard && checkBox1.Checked == true)
+            {
+                //皇帝タイプ選択
+                CardType = ConditionalbranchModel.KingCard;
+
+                //対象の説明文を取得
+                description = textBox1.Text;
+
+                //SQL更新フラグ
+                CheckFlag = ConditionalbranchModel.SqlUpdateFlag;
+
+                //皇帝カード更新フラグ
+                SaveImageCardDataModel.KingCardTypeCheckFlag = CheckFlag;
+            }
+
+            //SQL登録条件を満たした処理
+            else
+            {
+                //皇帝タイプ選択
+                CardType = ConditionalbranchModel.KingCard;
+
+                //対象の説明文を取得
+                description = textBox1.Text;
+
+            }
+        }
+
+        /// <summary>
+        /// 貧民チェックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            //皇帝チェック禁止
+            checkBox1.Enabled = false;
+
+            //平民チェック禁止
+            checkBox3.Enabled = false;
+
+            //SQL更新条件を満たした処理
+            if (SaveImageCardDataModel.PoorpeopleCardTypeNo == ConditionalbranchModel.PoorpeopleCard && checkBox2.Checked == true)
+            {
+                //貧民タイプ選択
+                CardType = ConditionalbranchModel.PoorpeopleCard;
+
+                //対象の説明文を取得
+                description = textBox1.Text;
+
+                //SQL更新フラグ
+                CheckFlag = ConditionalbranchModel.SqlUpdateFlag;
+
+                //貧民カード更新フラグ
+                SaveImageCardDataModel.PoorpeopleCardCheckFlag = CheckFlag;
+            }
+
+            //SQL登録条件を満たした処理
+            else
+            {
+                //貧民タイプ選択
+                CardType = ConditionalbranchModel.PoorpeopleCard;
+
+                //対象の説明文を取得
+                description = textBox1.Text;
+
+            }
+        }
+
+        /// <summary>
+        /// 平民チェックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            //皇帝チェック禁止
+            checkBox1.Enabled = false;
+
+            //貧民チェック禁止
+            checkBox2.Enabled = false;
+
+            //SQL更新条件を満たした処理
+            if (SaveImageCardDataModel.CommonerCardTypeNo == ConditionalbranchModel.CommonerCard && checkBox3.Checked == true)
+            {
+                //平民タイプ選択
+                CardType = ConditionalbranchModel.CommonerCard;
+
+                //対象の説明文を取得
+                description = textBox1.Text;
+
+                //SQL更新フラグ
+                CheckFlag = ConditionalbranchModel.SqlUpdateFlag;
+
+                //平民カード更新フラグ
+                SaveImageCardDataModel.CommonerCardCheckFlag = CheckFlag;
+
+            }
+
+            //SQL登録条件を満たした処理
+            else
+            {
+                //平民タイプ選択
+                CardType = ConditionalbranchModel.CommonerCard;
+
+                //対象の説明文を取得
+                description = textBox1.Text;
+
+            }
+        }
+
+        /// <summary>
+        /// Sql更新メソッド
+        /// </summary>
+        private void SqlUpdateProcess()
         {
             // 接続情報を渡す
             var dbHelper = new DatabaseHelper();
@@ -154,29 +290,51 @@ namespace ECard.View.Management.Image
             // 接続を開く
             var SqlServerOpen = dbHelper.OpenConnection();
 
-            //カードタイプ選択条件を満たした処理
-            if(CardType > 0)
-            {
-                // SQLserverへ登録
-                string sql = "INSERT INTO" +
-                              " images_card " +
-                              "(user_id , image_id , card_type , description , created_at , update_at)" +
-                              " VALUES" +
-                             $"('{UserLogin}' , '{ImageId}' , '{CardType}' , '{textBox1.Text}' , '{DateTime.Now}' , '{DateTime.Now}')";
+            //SQLの更新
+             string SqlUpdate = $"UPDATE images_card  " +
+                                $"SET  user_id = '{UserLogin}' , " +
+                                $"image_id = '{ImageId}' ," +
+                                $"card_type = '{CardType}' ," +
+                                $"description = '{textBox1.Text}' ," +
+                                $"created_at = '{DateTime.Now}' ," +
+                                $"update_at ='{DateTime.Now}' " +
+                                $"WHERE user_id = '{UserLogin}' AND " +
+                                $"image_id = '{SaveImageCardDataModel.UpdataImageId}' AND " +
+                                $"card_type = '{SaveImageCardDataModel.UpdataCardType}'";
 
-                //SQL実行結果を取得
-                DataTable result = dbHelper.ExecuteQuery(SqlServerOpen, sql);
-
-                MessageBox.Show("画像カード情報の登録が完了しました");
-
-            }
-            return CheckFlag;
+            //SQL実行結果を取得
+            DataTable result = dbHelper.ExecuteQuery(SqlServerOpen, SqlUpdate);
         }
 
         /// <summary>
-        /// 画像カード情報テーブル接続メソッド
+        /// Sql取得メソッド
         /// </summary>
-        private (int SaveImageId , int SaveCardType , int CheckFlag) SqlServerAccess()
+        private void SqlProcess()
+        {
+            // 接続情報を渡す
+            var dbHelper = new DatabaseHelper();
+
+            // 接続を開く
+            var SqlServerOpen = dbHelper.OpenConnection();
+
+            // SQLserverへ登録
+            string sql = "INSERT INTO" +
+                          " images_card " +
+                          "(user_id , image_id , card_type , description , created_at , update_at)" +
+                          " VALUES" +
+                         $"('{UserLogin}' , '{ImageId}' , '{CardType}' , '{textBox1.Text}' , '{DateTime.Now}' , '{DateTime.Now}')";
+
+            //SQL実行結果を取得
+            DataTable result = dbHelper.ExecuteQuery(SqlServerOpen, sql);
+
+            MessageBox.Show("画像カード情報の登録が完了しました");
+
+        }
+
+        /// <summary>
+        /// 画面カード登録情報取得メソッド
+        /// </summary>
+        private void  SqlServerAccess()
         {
             // 接続情報を渡す
             var dbHelper = new DatabaseHelper();
@@ -207,143 +365,192 @@ namespace ECard.View.Management.Image
             //皇帝登録のnullチェック
             if (KingCardType != null)
             {
-                //皇帝の画像データ反映
-                pictureBox2.Image = KingCardType.ImageDate;
+                //SQL登録情報:画像ID取得
+                SaveImageCardDataModel.KingCardTypeImageId = KingCardType.ImageId;
 
-                //ピクチャーボックスのサイズに画像を調整
-                pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+                //SQL登録情報:画像データ取得
+                SaveImageCardDataModel.KingCardTypeImage = KingCardType.ImageDate;
 
-                //皇帝の説明を反映
-                textBox4.Text = KingCardType.Description;
-                
+                //SQL登録情報:カードタイプ取得
+                SaveImageCardDataModel.KingCardTypeNo = KingCardType.CardType;
+
+                //SQL登録情報:説明取得
+                SaveImageCardDataModel.KingCardTypeDescription = KingCardType.Description;
             }
 
             //貧民登録のnullチェック
             if (PoorpeopleCardType != null)
             {
-                //貧民の画像データ反映
-                pictureBox3.Image = PoorpeopleCardType.ImageDate;
+                //SQL登録情報:画像ID取得
+                SaveImageCardDataModel.PoorpeopleCardTypeImageId = PoorpeopleCardType.ImageId;
 
-                //ピクチャーボックスのサイズに画像を調整
-                pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+                //SQL登録情報:画像データ取得
+                SaveImageCardDataModel.PoorpeopleCardTypeImage = PoorpeopleCardType.ImageDate;
 
-                //貧民の説明を反映
-                textBox2.Text = PoorpeopleCardType.Description;
+                //SQL登録情報:カードタイプ取得
+                SaveImageCardDataModel.PoorpeopleCardTypeNo = PoorpeopleCardType.CardType;
+
+                //SQL登録情報:説明取得
+                SaveImageCardDataModel.PoorpeopleCardTypeDescription = PoorpeopleCardType.Description;
+
             }
 
             //平民登録のnullチェック
             if (CommonerCardType != null)
             {
-                //平民の画像データ反映
-                pictureBox4.Image = CommonerCardType.ImageDate;
+                //SQL登録情報:画像ID取得
+                SaveImageCardDataModel.CommonerCardTypeImageId = CommonerCardType.ImageId;
+
+                //SQL登録情報:画像データ取得
+                SaveImageCardDataModel.CommonerCardTypeImage = CommonerCardType.ImageDate;
+
+                //SQL登録情報:カードタイプ取得
+                SaveImageCardDataModel.CommonerCardTypeNo = CommonerCardType.CardType;
+
+                //SQL登録情報:説明取得
+                SaveImageCardDataModel.CommonerCardTypeDescription = CommonerCardType.Description;
+
+            }
+
+            
+        }
+
+        /// <summary>
+        /// 皇帝カード更新、登録情報メソッド
+        /// </summary>
+        private void KingCardTypeConditionalbranch()
+        {
+            //皇帝更新条件を満たした処理
+            if (SaveImageCardDataModel.KingCardTypeCheckFlag == ConditionalbranchModel.SqlUpdateFlag)
+            {
+                //更新対象SQLの画像ID取得
+                SaveImageCardDataModel.UpdataImageId = SaveImageCardDataModel.KingCardTypeImageId;
+
+                //更新対象SQLのカードタイプ取得
+                SaveImageCardDataModel.UpdataCardType = SaveImageCardDataModel.KingCardTypeNo;
+
+                //選択対象の画像表示
+                pictureBox2.Image = SaveImageCardDataModel.KingCardTypeImage;
+
+                //ピクチャーボックスのサイズに画像を調整
+                pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                //選択対象の説明表示
+                textBox4.Text = SaveImageCardDataModel.KingCardTypeDescription;
+            }
+
+            //皇帝登録情報
+            else if (ConditionalbranchModel.KingCard == SaveImageCardDataModel.KingCardTypeNo)
+            {
+                //更新前SQLの画像ID取得
+                SaveImageCardDataModel.SaveImageId = SaveImageCardDataModel.KingCardTypeImageId;
+
+                //更新前SQLのカードタイプ取得
+                SaveImageCardDataModel.SaveCardType = SaveImageCardDataModel.KingCardTypeNo;
+
+                //選択対象の画像表示
+                pictureBox2.Image = SaveImageCardDataModel.KingCardTypeImage;
+
+                //ピクチャーボックスのサイズに画像を調整
+                pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                //選択対象の説明表示
+                textBox4.Text = SaveImageCardDataModel.KingCardTypeDescription;
+
+            }
+        }
+
+        /// <summary>
+        /// 貧民カード更新、登録情報メソッド
+        /// </summary>
+        private void PoorpeopleCardTypeConditionalbranch()
+        {
+            //貧民更新条件を満たした処理
+            if (SaveImageCardDataModel.PoorpeopleCardCheckFlag == ConditionalbranchModel.SqlUpdateFlag)
+            {
+                //更新対象SQLの画像ID取得
+                SaveImageCardDataModel.UpdataImageId = SaveImageCardDataModel.PoorpeopleCardTypeImageId;
+
+                //更新対象SQLのカードタイプ取得
+                SaveImageCardDataModel.UpdataCardType = SaveImageCardDataModel.PoorpeopleCardTypeNo;
+
+                //選択対象の画像表示
+                pictureBox3.Image = SaveImageCardDataModel.PoorpeopleCardTypeImage;
+
+                //ピクチャーボックスのサイズに画像を調整
+                pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                //選択対象の説明表示
+                textBox2.Text = SaveImageCardDataModel.PoorpeopleCardTypeDescription;
+
+            }
+
+            //貧民登録情報
+            else if (ConditionalbranchModel.PoorpeopleCard == SaveImageCardDataModel.PoorpeopleCardTypeNo)
+            {
+                //更新前SQLの画像ID取得
+                SaveImageCardDataModel.SaveImageId = SaveImageCardDataModel.PoorpeopleCardTypeImageId;
+
+                //更新前SQLのカードタイプ取得
+                SaveImageCardDataModel.SaveCardType = SaveImageCardDataModel.PoorpeopleCardTypeNo;
+
+                //選択対象の画像表示
+                pictureBox3.Image = SaveImageCardDataModel.PoorpeopleCardTypeImage;
+
+                //ピクチャーボックスのサイズに画像を調整
+                pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                //選択対象の説明表示
+                textBox2.Text = SaveImageCardDataModel.PoorpeopleCardTypeDescription;
+            }
+        }
+        /// <summary>
+        /// 平民カード更新、登録情報メソッド
+        /// </summary>
+        /// <returns></returns>
+        private void CommonerCardTypeConditionalbranch()
+        {
+            //平民更新条件を満たした処理
+            if(SaveImageCardDataModel.CommonerCardCheckFlag == ConditionalbranchModel.SqlUpdateFlag)
+            {
+                //更新対象SQLの画像ID取得
+                SaveImageCardDataModel.UpdataImageId = SaveImageCardDataModel.CommonerCardTypeImageId;
+
+                //更新対象SQLのカードタイプ取得
+                SaveImageCardDataModel.UpdataCardType = SaveImageCardDataModel.CommonerCardTypeNo;
+
+                //選択対象の画像表示
+                pictureBox4.Image = SaveImageCardDataModel.CommonerCardTypeImage;
 
                 //ピクチャーボックスのサイズに画像を調整
                 pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
 
-                //平民の説明を反映
-                textBox3.Text = CommonerCardType.Description;
-            }
-
-            //皇帝更新条件を満たした処理
-            if(KingCardType != null && CardType == 3)
-            {
-                //更新前SQLの画像ID取得
-                SaveImageId = KingCardType.ImageId;
-
-                //更新前SQLのカードタイプ取得
-                SaveCardType = KingCardType.CardType;
-
-                //SQL更新フラグON
-                CheckFlag = 1;
-            }
-
-            //貧民更新条件を満たした処理
-            if(PoorpeopleCardType != null && CardType == 2)
-            {
-                //更新前SQLの画像ID取得
-                SaveImageId = PoorpeopleCardType.ImageId;
-
-                //更新前SQLのカードタイプ取得
-                SaveCardType = PoorpeopleCardType.CardType;
-
-                //SQL更新フラグON
-                CheckFlag = 1;
-            }
-
-            //平民更新条件を満たした処理
-            if (CommonerCardType != null && CardType == 1)
-            {
-                //更新前SQLの画像ID取得
-                SaveImageId = CommonerCardType.ImageId;
-
-                //更新前SQLのカードタイプ取得
-                SaveCardType = CommonerCardType.CardType;
-
-                //SQL更新フラグON
-                CheckFlag = 1;
-            }
-            return (SaveImageId , SaveCardType , CheckFlag);
-        }
-
-
-        /// <summary>
-        /// チェックボックス選択メソッド
-        /// </summary>
-        private int checkboxflag()
-        {
-            //皇帝選択
-            if (checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked)
-            {
-                //皇帝タイプ選択
-                CardType = 3;
-
-                //対象画像を初期化
-                pictureBox1.Image = null;
-
-                //対象の説明文を取得
-                description = textBox1.Text;
-
-            }
-            //貧民選択
-            else if (checkBox2.Checked && !checkBox1.Checked && !checkBox3.Checked)
-            {
-                //貧民タイプ選択
-                CardType = 2;
-
-                //対象画像を初期化
-                pictureBox1.Image = null;
-
-                //対象の説明文を取得
-                description = textBox1.Text;
-
-            }
-            //平民選択
-            else if (checkBox3.Checked && !checkBox1.Checked && !checkBox2.Checked)
-            {
-
-                //平民タイプ選択
-                CardType = 1;
-
-                //対象画像を初期化
-                pictureBox1.Image = null;
-
-                //対象の説明文を取得
-                description = textBox1.Text;
-
+                //選択対象の説明表示
+                textBox3.Text = SaveImageCardDataModel.CommonerCardTypeDescription;
             }
             
-            //重複チェック
-            else 
+            //平民登録情報
+            else if (ConditionalbranchModel.CommonerCard == SaveImageCardDataModel.CommonerCardTypeNo)
             {
-                checkBox1.Checked = false;
-                checkBox2.Checked = false;
-                checkBox3.Checked = false;
-                MessageBox.Show("重複しております、再設定お願いします");
+                //更新前SQLの画像ID取得
+                SaveImageCardDataModel.SaveImageId = SaveImageCardDataModel.CommonerCardTypeImageId;
+
+                //更新前SQLのカードタイプ取得
+                SaveImageCardDataModel.SaveCardType = SaveImageCardDataModel.CommonerCardTypeNo;
+
+                //選択対象の画像表示
+                pictureBox4.Image = SaveImageCardDataModel.CommonerCardTypeImage;
+
+                //ピクチャーボックスのサイズに画像を調整
+                pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                //選択対象の説明表示
+                textBox3.Text = SaveImageCardDataModel.CommonerCardTypeDescription;
 
             }
-            return (CardType);
+
         }
-        
+
         /// <summary>
         /// //選択対象の画像・説明表示メソッド
         /// </summary>
@@ -375,7 +582,11 @@ namespace ECard.View.Management.Image
 
             }
         }
-
+        /// <summary>
+        /// 画像カードテーブル情報イベント
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         private List<ImageCardViewModel> setImageList(DataTable result)
         {
             //モデムクラスの初期化
@@ -410,12 +621,10 @@ namespace ECard.View.Management.Image
                     Description = row["description"].ToString(),
 
                 };
-
                 list.Add(model);
 
             }
-
             return list;
-        }
+        }        
     }
 }

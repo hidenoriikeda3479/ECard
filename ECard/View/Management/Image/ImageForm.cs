@@ -10,12 +10,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ECard.Common;
+using ECard.Model;
 using ECard.User;
 using ECard.View.Management.Image;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ECard.Management.Image
 {
+    /// <summary>
+    /// 画像一覧画面
+    /// </summary>
     public partial class ImageForm : Form
     {
         /// <summary>
@@ -24,14 +28,19 @@ namespace ECard.Management.Image
         private string sql;
 
         /// <summary>
-        /// ユーザーid変数宣言
+        /// ユーザーID変数宣言
         /// </summary>
         private int login;
 
+        /// <summary>
+        /// ユーザーログインイベント
+        /// </summary>
+        /// <param name="UserLogin"></param>
         public ImageForm(int UserLogin)
         {
             InitializeComponent();
 
+            //ユーザーID取得
             login = UserLogin;
 
         }
@@ -61,7 +70,7 @@ namespace ECard.Management.Image
             dataGridView1.Columns.Clear();
 
             //ユーザーログイン条件
-            if(login == 1) 
+            if(login == ConditionalbranchModel.UserLoginID) 
             {
                 //SQL実行メソッド呼び出し
                 SqlProcess();
@@ -71,7 +80,7 @@ namespace ECard.Management.Image
 
             }
             //管理者ログイン条件
-            else if(login == 2) 
+            else if(login == ConditionalbranchModel.AdministratorLoginID) 
             {
                 //SQL実行メソッド呼び出し
                 SqlProcess();

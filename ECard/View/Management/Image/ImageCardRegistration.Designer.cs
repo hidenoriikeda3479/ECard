@@ -71,6 +71,7 @@
             this.checkBox1.TabIndex = 1;
             this.checkBox1.Text = "皇帝";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // checkBox2
             // 
@@ -82,6 +83,7 @@
             this.checkBox2.TabIndex = 1;
             this.checkBox2.Text = "貧民";
             this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // checkBox3
             // 
@@ -93,6 +95,7 @@
             this.checkBox3.TabIndex = 1;
             this.checkBox3.Text = "平民";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // button4
             // 
@@ -204,7 +207,7 @@
             this.textBox3.Size = new System.Drawing.Size(255, 19);
             this.textBox3.TabIndex = 4;
             // 
-            // UserCardRegistration
+            // ImageCardRegistration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -226,7 +229,7 @@
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
-            this.Name = "UserCardRegistration";
+            this.Name = "ImageCardRegistration";
             this.Text = "UserCardRegistration";
             this.Load += new System.EventHandler(this.UserCardRegistration_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

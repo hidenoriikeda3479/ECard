@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ECard.Model
 {
-    internal class ImageCardViewModel
+    /// <summary>
+    /// 画像カード情報
+    /// </summary>
+    public class ImageCardViewModel
     {
         // <summary>
         /// ユーザーID取得

@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="Common\DatabaseHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="Model\SaveImageCardDataModel.cs" />
+    <Compile Include="Model\ConditionalbranchModel.cs" />
     <Compile Include="Model\ImageCardViewModel.cs" />
     <Compile Include="View\Management\Image\ImageCardRegistration.cs">
       <SubType>Form</SubType>
