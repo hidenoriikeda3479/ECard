@@ -49,9 +49,15 @@
   <ItemGroup>
     <Compile Include="Common\DatabaseHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
-    <Compile Include="Model\SaveImageCardDataModel.cs" />
+    <Compile Include="Model\SaveImageCardModel.cs" />
     <Compile Include="Model\ConditionalbranchModel.cs" />
     <Compile Include="Model\ImageCardViewModel.cs" />
+    <Compile Include="View\Main\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Main\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Management\Image\ImageCardRegistration.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +122,9 @@
       <DependentUpon>UserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\UserViewModel.cs" />
+    <EmbeddedResource Include="View\Main\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Management\Image\ImageCardRegistration.resx">
       <DependentUpon>ImageCardRegistration.cs</DependentUpon>
     </EmbeddedResource>
