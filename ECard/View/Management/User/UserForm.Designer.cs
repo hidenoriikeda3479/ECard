@@ -58,7 +58,7 @@
             // 
             // dateTimePicker
             // 
-            this.dateTimePicker.Location = new System.Drawing.Point(99, 60);
+            this.dateTimePicker.Location = new System.Drawing.Point(374, 12);
             this.dateTimePicker.Name = "dateTimePicker";
             this.dateTimePicker.Size = new System.Drawing.Size(169, 24);
             this.dateTimePicker.TabIndex = 6;
@@ -67,7 +67,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("MS UI Gothic", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label4.Location = new System.Drawing.Point(34, 62);
+            this.label4.Location = new System.Drawing.Point(309, 14);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 17);
             this.label4.TabIndex = 8;
@@ -75,7 +75,7 @@
             // 
             // btnLan
             // 
-            this.btnLan.Location = new System.Drawing.Point(460, 62);
+            this.btnLan.Location = new System.Drawing.Point(752, 60);
             this.btnLan.Name = "btnLan";
             this.btnLan.Size = new System.Drawing.Size(92, 24);
             this.btnLan.TabIndex = 9;
@@ -85,7 +85,7 @@
             // 
             // btnSae
             // 
-            this.btnSae.Location = new System.Drawing.Point(460, 12);
+            this.btnSae.Location = new System.Drawing.Point(12, 60);
             this.btnSae.Name = "btnSae";
             this.btnSae.Size = new System.Drawing.Size(92, 24);
             this.btnSae.TabIndex = 10;
@@ -100,14 +100,14 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(554, 380);
+            this.dataGridView1.Size = new System.Drawing.Size(849, 380);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(274, 63);
+            this.checkBox1.Location = new System.Drawing.Point(549, 15);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(18, 17);
             this.checkBox1.TabIndex = 14;
@@ -117,7 +117,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(562, 478);
+            this.ClientSize = new System.Drawing.Size(856, 478);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnSae);

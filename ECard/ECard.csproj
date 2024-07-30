@@ -49,6 +49,14 @@
   <ItemGroup>
     <Compile Include="Common\DatabaseHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="Model\PermissionsViewModel.cs" />
+    <Compile Include="Model\User_PermissionsViewModel.cs" />
+    <Compile Include="View\Management\Role\Authority.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Management\Role\Authority.designer.cs">
+      <DependentUpon>Authority.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Management\User\RegistrationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +109,9 @@
       <DependentUpon>UserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\UserViewModel.cs" />
+    <EmbeddedResource Include="View\Management\Role\Authority.resx">
+      <DependentUpon>Authority.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Management\User\RegistrationForm.resx">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -37,8 +37,10 @@ namespace ECard
             // 入力確認
             InputCheck();
             // アップデート可不可
-            UpdateCheck();        
+            UpdateCheck();
         }
+
+        #region btnUpイベント一覧
 
         /// <summary>
         ///  入力確認イベント
@@ -66,30 +68,9 @@ namespace ECard
                     // SQL
                     string query = "UPDATE users SET username = @UserName, password_hash = @Chanps, update_at = @UpdateAt WHERE user_id = @UserId";
 
-                    using (SqlCommand cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@UserName", txtUser.Text);
-                        cmd.Parameters.AddWithValue("@Chanps", txtChanps.Text);
-                        cmd.Parameters.AddWithValue("@UserId", UserId);
-                        cmd.Parameters.AddWithValue("@UpdateAt", DateTime.Now);
-
-                        int result = cmd.ExecuteNonQuery();
-
-                        // アップデート確認
-                        if (result > 0)
-                        {
-                            MessageBox.Show("更新が完了しました。" + DateTime.Now);
-
-                            // フォームを閉じる
-                            this.Close();
-                        }
-                        // 想定内エラー
-                        else
-                        {
-                            MessageBox.Show("更新に失敗しました。");
-                        }
-                    }
+                    UpdateEvent(query, con);
                 }
+
                 // 想定外エラー
                 catch (Exception ex)
                 {
@@ -97,5 +78,51 @@ namespace ECard
                 }
             }
         }
+        #endregion
+
+        #region UpdateCheckイベント一覧
+
+        /// <summary>
+        /// データテーブル更新イベント
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="con"></param>
+        private void UpdateEvent(string query, SqlConnection con)
+        {
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("@UserName", txtUser.Text);
+                cmd.Parameters.AddWithValue("@Chanps", txtChanps.Text);
+                cmd.Parameters.AddWithValue("@UserId", UserId);
+                cmd.Parameters.AddWithValue("@UpdateAt", DateTime.Now);
+
+                int result = cmd.ExecuteNonQuery();
+
+                // 確認メッセージボックス
+                ConFirmation(result);
+            }
+        }
+
+        /// <summary>
+        /// 確認メッセージボックスイベント
+        /// </summary>
+        /// <param name="result"></param>
+        private void ConFirmation(int result)
+        {
+            // アップデート確認
+            if (result > 0)
+            {
+                MessageBox.Show("更新が完了しました。" + DateTime.Now);
+
+                // フォームを閉じる
+                this.Close();
+            }
+            // 想定内エラー
+            else
+            {
+                MessageBox.Show("更新に失敗しました。");
+            }
+        }
     }
+    #endregion
 }

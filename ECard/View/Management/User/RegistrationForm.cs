@@ -16,7 +16,6 @@ using System.Xml.Linq;
 
 namespace ECard
 {
-
     /// <summary>
     /// ユーザー登録画面
     /// </summary>
@@ -38,7 +37,7 @@ namespace ECard
             UserCon();
         }
 
-        #region イベント一覧
+        #region btnLan一覧
 
         /// <summary>
         /// ユーザー登録イベント
@@ -71,10 +70,13 @@ namespace ECard
             else
             {
                 // ユーザー登録処理
-                UserElse(); 
+                UserElse();
             }
         }
 
+        #endregion
+
+        #region btnLan一覧
         /// <summary>
         /// 入力Checkイベント
         /// </summary>

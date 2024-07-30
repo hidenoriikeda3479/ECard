@@ -31,5 +31,15 @@ namespace ECard.View.Management.User
         /// 更新日取得
         /// </summary>
         public DateTime? UpdateAt { get; set; }
+
+        /// <summary>
+        /// 権限ID取得
+        /// </summary>
+        public int PermisUserId { get; set; }
+
+        /// <summary>
+        /// 権限名
+        /// </summary>
+        public string PermisName { get; set; }
     }
 }

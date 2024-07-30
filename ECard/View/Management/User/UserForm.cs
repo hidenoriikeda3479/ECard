@@ -12,7 +12,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ECard.View.Management.Role;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 // TODOリスト
 
@@ -51,7 +54,7 @@ namespace ECard.User
         }
 
         /// <summary>
-        /// グリッドのボタンクリック
+        /// dataGridViewボタン
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -67,6 +70,11 @@ namespace ECard.User
                 // 削除ボタン
                 DeleteBtn(e);
             }
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "additionBtn")
+            {
+                // 権限付与ボタン
+                AdditionBtn(e);
+            }
         }
 
         /// <summary>
@@ -80,8 +88,9 @@ namespace ECard.User
             {
                 try
                 {
-                    // SQLクエリ
+                    // SQL
                     string query = "DELETE FROM users WHERE user_id = @UserId";
+
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@UserId", id);
@@ -99,13 +108,28 @@ namespace ECard.User
                         }
                     }
                 }
+                catch (SqlException ex)
+                {
+                    // 権限が付与されているユーザー
+                    if (ex.Number == 547)
+                    {
+                        MessageBox.Show("権限が付与されている為削除できません");
+                    }
+                    else
+                    {
+                        MessageBox.Show("エラーが発生しました: " + ex.Message);
+                    }
+                }
                 catch (Exception ex)
                 {
                     MessageBox.Show("エラーが発生しました: " + ex.Message);
                 }
+
             }
         }
         #region イベント一覧
+
+        #region 検索イベント
         /// <summary>
         /// 検索ボタンクリックイベント
         /// </summary>
@@ -123,41 +147,34 @@ namespace ECard.User
             /// SQLクエリ
             string sql = $"SELECT * FROM users Where 1 = 1";
 
-            // 検索
-            sql += SearchCheck();
-
             DataTable result = dbHelper.ExecuteQuery(con, sql);
 
             // データグリッドビュー列作成
             DataGridView();
 
-            dataGridView1.DataSource = DataRef(result);
-        }
+            // データ表示用の列を作成
+            DataColumn();
 
-        /// <summary>
-        /// DataGridView列作成メソッド
-        /// </summary>
-        private void DataGridView()
-        {
-            // 更新ボタン列を作成
-            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
-            buttonColumn.HeaderText = "更新"; // 列のヘッダーテキスト
-            buttonColumn.Name = "ActionColumn"; // 列の名前
-            buttonColumn.Text = "編集"; // ボタンに表示されるテキスト
-            buttonColumn.UseColumnTextForButtonValue = true; //全てのボタンに"編集"と表示されます
+            // DataTableをリストに変換（マッピング）
+            var list = DataRef(result);
 
-            // 削除ボタン列を作成
-            DataGridViewButtonColumn deleteBtn = new DataGridViewButtonColumn();
-            deleteBtn.HeaderText = "データ削除"; // 列のヘッダーテキスト
-            deleteBtn.Name = "deleteBtn"; // 列の名前
-            deleteBtn.Text = "削除"; // ボタンに表示されるテキスト
-            deleteBtn.UseColumnTextForButtonValue = true; // 全てのボタンに"削除"と表示されます
+            // sql を初期化
+            var aa = list.AsEnumerable();
 
-            // dataGridView1の最初の列としてボタン列を追加
-            dataGridView1.Columns.Insert(0, buttonColumn);
+            // 名前
+            if (!string.IsNullOrEmpty(txtUser.Text))
+            {
+                aa = aa.Where(n => n.UserName == txtUser.Text);
+            }
 
-            // dataGridView1の最初の列としてボタン列を追加
-            dataGridView1.Columns.Insert(1, deleteBtn);
+            // 作成日
+            if (checkBox1.Checked)
+            {
+                aa = aa.Where(n => n.CreatedAt.Date == dateTimePicker.Value.Date);
+            }
+
+            // DataGridViewにデータをバインド
+            dataGridView1.DataSource = aa.ToList();
         }
 
         /// <summary>
@@ -177,7 +194,116 @@ namespace ECard.User
                 // 登録日から検索
                 return $" And CONVERT(date, created_at) = '{dateTimePicker.Value.ToString("yyyy/MM/dd")}'";
             }
-            return string .Empty ;
+            return string.Empty;
+        }
+        #endregion
+
+        #region DataGridViewイベント
+        /// <summary>
+        /// DataGridViewボタン作成メソッド
+        /// </summary>
+        private void DataGridView()
+        {
+            // 更新ボタン列を作成
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn
+            {
+                HeaderText = "更新", // 列のヘッダーテキスト
+                Name = "ActionColumn", // 列の名前
+                Text = "編集", // ボタンに表示されるテキスト
+                UseColumnTextForButtonValue = true //全てのボタンに"編集"と表示されます
+            };
+
+            // 削除ボタン列を作成
+            DataGridViewButtonColumn deleteBtn = new DataGridViewButtonColumn
+            {
+                HeaderText = "データ削除", // 列のヘッダーテキスト
+                Name = "deleteBtn", // 列の名前
+                Text = "削除", // ボタンに表示されるテキスト
+                UseColumnTextForButtonValue = true // 全てのボタンに"削除"と表示されます
+            };
+
+            // 権限ボタン列を作成
+            DataGridViewButtonColumn additionBtn = new DataGridViewButtonColumn
+            {
+                HeaderText = "権限付与", // 列のヘッダーテキスト
+                Name = "additionBtn", // 列の名前
+                Text = "権限", // ボタンに表示されるテキスト
+                UseColumnTextForButtonValue = true // 全てのボタンに"付与"と表示されます
+            };
+
+            // dataGridView1の最初の列としてボタン列を追加
+            dataGridView1.Columns.Insert(0, buttonColumn);
+
+            // dataGridView1の二番目の列としてボタン列を追加
+            dataGridView1.Columns.Insert(1, deleteBtn);
+
+            // dataGridView1の三番目の列としてボタン列を追加
+            dataGridView1.Columns.Insert(2, additionBtn);
+
+        }
+
+        /// <summary>
+        /// DataGridView列名表示メソッド
+        /// </summary>
+        private void DataColumn()
+        {
+            {
+                // ユーザーID列を作成
+                DataGridViewTextBoxColumn userIdColumn = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "UserId", // データソースのカラム名
+                    HeaderText = "ユーザーID", // 列のヘッダーテキスト
+                    Name = "UserId" // 列の名前
+                };
+
+                // ユーザー名列を作成
+                DataGridViewTextBoxColumn userNameColumn = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "UserName", // データソースのカラム名
+                    HeaderText = "ユーザー名", // 列のヘッダーテキスト
+                    Name = "UserName" // 列の名前
+                };
+
+                // 作成日列を作成
+                DataGridViewTextBoxColumn createdAtColumn = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "CreatedAt", // データソースのカラム名
+                    HeaderText = "作成日", // 列のヘッダーテキスト
+                    Name = "CreatedAt" // 列の名前
+                };
+
+                // 更新日列を作成
+                DataGridViewTextBoxColumn updatedAtColumn = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "UpdateAt", // データソースのカラム名
+                    HeaderText = "更新日", // 列のヘッダーテキスト
+                    Name = "UpdateAt" // 列の名前
+                };
+
+                // 権限ID列を作成
+                DataGridViewTextBoxColumn permisUserIdColumn = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "PermisUserId", // データソースのカラム名
+                    HeaderText = "権限ID", // 列のヘッダーテキスト
+                    Name = "PermisUserId" // 列の名前
+                };
+
+                // 権限名列を作成
+                DataGridViewTextBoxColumn permisNameColumn = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "PermisName", // データソースのカラム名
+                    HeaderText = "権限名", // 列のヘッダーテキスト
+                    Name = "PermisName" // 列の名前
+                };
+
+                // DataGridViewに列を追加
+                dataGridView1.Columns.Add(userIdColumn);
+                dataGridView1.Columns.Add(userNameColumn);
+                dataGridView1.Columns.Add(createdAtColumn);
+                dataGridView1.Columns.Add(updatedAtColumn);
+                dataGridView1.Columns.Add(permisUserIdColumn);
+                dataGridView1.Columns.Add(permisNameColumn);
+            }
         }
 
         /// <summary>
@@ -205,18 +331,20 @@ namespace ECard.User
             }
             return list;
         }
+        #endregion
 
+        #region DataGridViewボタンイベント
         /// <summary>
         /// 更新ボタンイベント
         /// </summary>
         private void UpdateBtn(DataGridViewCellEventArgs e)
         {
-                // 押された行のユーザー名、IDを取得する。
-                var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
-                var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
+            // 押された行のユーザー名、IDを取得する。
+            var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
+            var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
 
-                Update Update = new Update(userId.ToString(), username.ToString());
-                Update.Show();
+            Update Update = new Update(userId.ToString(), username.ToString());
+            Update.Show();
         }
 
         /// <summary>
@@ -224,14 +352,29 @@ namespace ECard.User
         /// </summary>
         private void DeleteBtn(DataGridViewCellEventArgs e)
         {
-                if (MessageBox.Show("この行を削除してもよろしいですか？", "確認",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    // 削除する行の主キーを取得
-                    int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
-                　　DeleteData(id);
-    　     　   }
+            if (MessageBox.Show("この行を削除してもよろしいですか？", "確認",
+                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                // 削除する行の主キーを取得
+                int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value);
+                DeleteData(id);
             }
         }
-        #endregion
+
+        /// <summary>
+        /// 権限追加イベント
+        /// </summary>
+        private void AdditionBtn(DataGridViewCellEventArgs e)
+        {
+            // 押された行のユーザー名、IDを取得する。
+            var userId = dataGridView1.Rows[e.RowIndex].Cells["UserId"].Value;
+            var username = dataGridView1.Rows[e.RowIndex].Cells["UserName"].Value;
+
+            Authority Authority = new Authority(userId.ToString(), username.ToString());
+            Authority.Show();
+        }
     }
+    #endregion
+
+    #endregion
+}
