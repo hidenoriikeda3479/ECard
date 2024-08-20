@@ -18,6 +18,11 @@ namespace ECard
     public partial class ManagementForm : Form
     {
         /// <summary>
+        /// 管理者ログインのグローバル変数宣言
+        /// </summary>
+        private int ManagementLogin = 2;
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public ManagementForm()
@@ -47,7 +52,7 @@ namespace ECard
         private void btnImage_Click(object sender, EventArgs e)
         {
             // 画像設定画面を初期化
-            var userForm = new ImageForm();
+            var userForm = new ImageForm(ManagementLogin);
 
             // 画面をモードレスで表示
             userForm.Show();
